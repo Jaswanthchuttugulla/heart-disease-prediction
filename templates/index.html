@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Heart Disease Prediction</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+        }
+
+        .container {
+            width: 420px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            margin-top: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            height: 42px;
+            padding: 8px 10px;
+            margin: 8px 0;
+            font-size: 14px;
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            height: 44px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h2>Heart Disease Prediction</h2>
+
+    <form method="POST">
+
+        <input type="number" name="age"
+               placeholder="Age (18–100)"
+               value="{{ form_data.get('age','') }}" required>
+
+        <select name="sex">
+            <option value="1" {% if form_data.get('sex')=='1' %}selected{% endif %}>Male</option>
+            <option value="0" {% if form_data.get('sex')=='0' %}selected{% endif %}>Female</option>
+        </select>
+
+        <input type="number" name="chest_pain_type"
+               placeholder="Chest Pain Type (1–4)"
+               value="{{ form_data.get('chest_pain_type','') }}" required>
+
+        <input type="number" name="resting_bp_s"
+               placeholder="Resting BP (90–200)"
+               value="{{ form_data.get('resting_bp_s','') }}" required>
+
+        <input type="number" name="cholesterol"
+               placeholder="Cholesterol (100–600)"
+               value="{{ form_data.get('cholesterol','') }}" required>
+
+        <select name="fasting_blood_sugar">
+            <option value="0" {% if form_data.get('fasting_blood_sugar')=='0' %}selected{% endif %}>FBS ≤ 120</option>
+            <option value="1" {% if form_data.get('fasting_blood_sugar')=='1' %}selected{% endif %}>FBS > 120</option>
+        </select>
+
+        <input type="number" name="resting_ecg"
+               placeholder="Resting ECG (0–2)"
+               value="{{ form_data.get('resting_ecg','') }}" required>
+
+        <input type="number" name="max_heart_rate"
+               placeholder="Max Heart Rate (60–220)"
+               value="{{ form_data.get('max_heart_rate','') }}" required>
+
+        <select name="exercise_angina">
+            <option value="0" {% if form_data.get('exercise_angina')=='0' %}selected{% endif %}>No Exercise Angina</option>
+            <option value="1" {% if form_data.get('exercise_angina')=='1' %}selected{% endif %}>Exercise Angina</option>
+        </select>
+
+        <input type="number" step="any" name="oldpeak"
+               placeholder="Oldpeak (0.0–6.0)"
+               value="{{ form_data.get('oldpeak','') }}" required>
+
+        <input type="number" name="st_slope"
+               placeholder="ST Slope (1–3)"
+               value="{{ form_data.get('st_slope','') }}" required>
+
+        <button type="submit">Predict</button>
+        <button type="reset" style="background:#6c757d;">Clear</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result">
+        <strong>{{ prediction }}</strong><br>
+        Risk Probability: {{ probability }}%
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>
