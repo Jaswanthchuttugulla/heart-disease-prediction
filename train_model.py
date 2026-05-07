@@ -1,70 +1,71 @@
 import pandas as pd
-import numpy as np
-import pickle
+import joblib
 
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, roc_auc_score
-from xgboost import XGBClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 # ==============================
-# 1. Load Combined Dataset
+# 1. Load Dataset
 # ==============================
 DATA_PATH = "dataset/heart-disease-dataset.csv"
+
 df = pd.read_csv(DATA_PATH)
 
-print("Combined dataset loaded:")
+print("Dataset Loaded Successfully")
 print(df.shape)
 print(df.head())
 
 # ==============================
-# 2. Split Features & Target
+# 2. Features and Target
 # ==============================
-X = df.drop("target", axis=1)   # use "target" if merged file uses that column
+X = df.drop("target", axis=1)
 y = df["target"]
 
 # ==============================
-# 3. Train-Test Split
-# ========================
-# ======
+# 3. Train Test Split
+# ==============================
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
+    X,
+    y,
     test_size=0.2,
     random_state=42,
     stratify=y
 )
 
 # ==============================
-# 4. Build & Train Model
+# 4. Build Model
 # ==============================
-model = XGBClassifier(
-    n_estimators=1000,
-    max_depth=4,
-    learning_rate=0.03,
-    subsample=0.85,
-    colsample_bytree=0.85,
-    objective="binary:logistic",
-    eval_metric="auc",
-    random_state=42,
-    n_jobs=-1
+model = RandomForestClassifier(
+    n_estimators=200,
+    max_depth=8,
+    random_state=42
 )
 
+# ==============================
+# 5. Train Model
+# ==============================
 model.fit(X_train, y_train)
 
 # ==============================
-# 5. Evaluate
+# 6. Predictions
 # ==============================
-y_probs = model.predict_proba(X_test)[:,1]
 y_pred = model.predict(X_test)
+y_probs = model.predict_proba(X_test)[:, 1]
 
-print("Accuracy:", accuracy_score(y_test, y_pred))
+# ==============================
+# 7. Evaluation
+# ==============================
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
+
 print("\nClassification Report:")
 print(classification_report(y_test, y_pred))
-print("ROC-AUC:", roc_auc_score(y_test, y_probs))
+
+print("\nROC-AUC Score:", roc_auc_score(y_test, y_probs))
 
 # ==============================
-# 6. Save Model
+# 8. Save Model
 # ==============================
-with open("model_combined.pkl", "wb") as f:
-    pickle.dump(model, f)
+joblib.dump(model, "model.pkl")
 
-print("\nModel saved as model_combined.pkl")
+print("\nModel saved successfully as model.pkl")

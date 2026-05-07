@@ -5,8 +5,7 @@ import joblib
 app = Flask(__name__)
 
 # Load trained model
-with open("model_combined.pkl", "rb") as f:
-    model = joblib.load("model_combined.pkl")
+model = joblib.load("model.pkl")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -15,7 +14,7 @@ def index():
     form_data = {}
 
     if request.method == "POST":
-        # store form values
+
         form_data = request.form.to_dict()
 
         features = [
@@ -49,4 +48,3 @@ def index():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-
